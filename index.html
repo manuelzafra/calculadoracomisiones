@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Comparador de Comisiones</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        input, button { margin: 5px; padding: 5px; }
+        #resultados { margin-top: 20px; }
+    </style>
+</head>
+<body>
+    <h1>Comparador de Comisiones</h1>
+    <div>
+        <label for="ventasAnuales">Ventas Anuales (€):</label>
+        <input type="number" id="ventasAnuales" required>
+    </div>
+    <div>
+        <label for="numeroTransacciones">Número de Transacciones:</label>
+        <input type="number" id="numeroTransacciones" required>
+    </div>
+    <button onclick="calcularComisiones()">Calcular Comisiones</button>
+    <div id="resultados"></div>
+
+    <script src="script.js"></script>
+</body>
+</html>

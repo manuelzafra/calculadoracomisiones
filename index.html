@@ -12,15 +12,21 @@
 </head>
 <body>
     <h1>Comparador de Comisiones</h1>
-    <div>
-        <label for="ventasAnuales">Ventas Anuales (€):</label>
-        <input type="number" id="ventasAnuales" required>
-    </div>
-    <div>
-        <label for="numeroTransacciones">Número de Transacciones:</label>
-        <input type="number" id="numeroTransacciones" required>
-    </div>
-    <button onclick="calcularComisiones()">Calcular Comisiones</button>
+    <form id="comisionesForm">
+        <div>
+            <label for="numeroVentasAnuales">Número de ventas anuales (uds):</label>
+            <input type="number" id="numeroVentasAnuales" required>
+        </div>
+        <div>
+            <label for="ticketMedio">Ticket medio del año (€):</label>
+            <input type="number" id="ticketMedio" step="0.01" required>
+        </div>
+        <div>
+            <label for="numeroTransacciones">Número de Transacciones:</label>
+            <input type="number" id="numeroTransacciones" required>
+        </div>
+        <button type="submit">Calcular Comisiones</button>
+    </form>
     <div id="resultados"></div>
 
     <script src="script.js"></script>

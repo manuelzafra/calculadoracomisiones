@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calculadora de Ventas y Comisiones</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: {"50":"#eff6ff","100":"#dbeafe","200":"#bfdbfe","300":"#93c5fd","400":"#60a5fa","500":"#3b82f6","600":"#2563eb","700":"#1d4ed8","800":"#1e40af","900":"#1e3a8a","950":"#172554"}
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-gray-100">
+    <div class="w-full">
+        <header class="bg-primary-600 py-8 md:py-12 lg:py-16">
+            <div class="container mx-auto px-4 md:px-6 lg:px-8">
+                <div class="max-w-3xl mx-auto text-center">
+                    <h1 class="text-3xl font-bold text-white sm:text-4xl md:text-5xl">
+                        Calcula y compara las comisiones de venta digital de tu negocio
+                    </h1>
+                    <p class="mt-4 text-lg text-white/80 md:text-xl">
+                        Compara las comisiones de las distintas pasarelas de cobro. 
+                        Las comisiones pueden suponer entre un 1 y un 2,5% de toda tu facturación.
+                        Al final de año puede haber diferencia de hasta un 200% entre unas pasarelas y otras,
+                        y eso son cientos de euros que no van a tu bolsillo. 
+                    </p>
+                </div>
+            </div>
+        </header>
+        <main class="py-12 md:py-16 lg:py-20">
+            <div class="container mx-auto px-4 md:px-6 lg:px-8">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                    <div class="bg-white rounded-lg shadow-lg p-6 md:p-8">
+                        <h2 class="text-2xl font-bold mb-4">Versión simple</h2>
+                        <p class="text-gray-600 mb-6">
+                            La versión simple hace un cálculo de las comisiones según el número de ventas anuales
+                            y el ticket medio de estas ventas. El dato devuelto será una aproximación bastante certera
+                            a cantidad real de comisiones pagadas si no hay mucha diferencia, en €, entre las distintas
+                            ventas que haces.  
+                        </p>
+                        <form class="grid grid-cols-1 gap-4">
+                            <div>
+                                <label for="ventasAnuales" class="block text-sm font-medium text-gray-700 mb-1">
+                                    Número de ventas anuales
+                                </label>
+                                <input
+                                    class="flex h-10 rounded-md border border-gray-300 bg-white px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary-500 w-full"
+                                    id="ventasAnuales"
+                                    type="number"
+                                    required
+                                />
+                            </div>
+                            <div>
+                                <label for="ticketMedio" class="block text-sm font-medium text-gray-700 mb-1">
+                                    Valor medio del ticket (€)
+                                </label>
+                                <input
+                                    class="flex h-10 rounded-md border border-gray-300 bg-white px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary-500 w-full"
+                                    id="ticketMedio"
+                                    type="number"
+                                    step="0.01"
+                                    required
+                                />
+                            </div>
+                            <div>
+                                <label for="pasarela" class="block text-sm font-medium text-gray-700 mb-1">
+                                    Selecciona la pasarela de pago
+                                </label>
+                                <select
+                                    id="pasarela"
+                                    class="flex h-10 rounded-md border border-gray-300 bg-white px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary-500 w-full"
+                                >
+                                    <option value="Stripe">Stripe</option>
+                                    <option value="LinkByStripe">Link by Stripe</option>
+                                    <option value="SEPAByStripe">SEPA by Stripe</option>
+                                    <option value="SquareTienda">Square Tienda</option>
+                                    <option value="SquarePaymentLink">Square Payment Link</option>
+                                    <option value="SumUp">SumUp</option>
+                                    <option value="MoneiX">Monei X</option>
+                                    <option value="GoCardless">GoCardless</option>
+                                    <option value="Transferencia">Transferencia</option>
+                                </select>
+                            </div>
+                            <button
+                                onclick="calcular(); calcularComisiones(); return false;"
+                                class="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-500 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-primary-600 text-white hover:bg-primary-700 h-10 px-4 py-2 w-full"
+                                type="submit"
+                            >
+                                Calcular
+                            </button>
+                        </form>
+                        <div id="resultado" class="mt-6 text-gray-700"></div>
+                        <div id="comisiones" class="mt-4 text-gray-700 font-semibold"></div>
+                    </div>
+                    <div class="bg-white rounded-lg shadow-lg p-6 md:p-8">
+                        <h2 class="text-2xl font-bold mb-4">Versión Realista</h2>
+                        <p class="text-gray-600 mb-6">
+                            La versión realista hace un cálculo exacto de las comisiones que pagarías según los datos que le subas. 
+                            Aquí abajo tienes dos opciones: una para subir un archivo con tus ventas y otra para pegar directamente. 
+                            Sube una hoja de cálculo Excel o copia y pega una tabla con tus ventas para obtener un resultado detallado.
+                        </p>
+                        <form class="grid grid-cols-1 gap-4">
+                            <div>
+                                <label for="data-input" class="block text-sm font-medium text-gray-700 mb-1">
+                                    Entrada de Datos
+                                </label>
+                                <div class="flex items-center space-x-4">
+                                    <input
+                                        class="flex h-10 w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary-500 flex-1"
+                                        id="data-input"
+                                        accept=".xlsx, .csv"
+                                        type="file"
+                                    />
+                                    <span class="text-gray-500">o</span>
+                                    <textarea
+                                        class="flex min-h-[80px] w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary-500 flex-1"
+                                        id="data-input"
+                                        rows="3"
+                                        placeholder="Pega tus datos aquí"
+                                    ></textarea>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        function calcular() {
+            const ventasAnuales = parseFloat(document.getElementById('ventasAnuales').value);
+            const ticketMedio = parseFloat(document.getElementById('ticketMedio').value);
+
+            if (isNaN(ventasAnuales) || isNaN(ticketMedio)) {
+                alert("Por favor, introduce valores numéricos válidos.");
+                return;
+            }
+
+            const ventasMensuales = ventasAnuales / 12;
+            const facturacionMensual = (ticketMedio * ventasAnuales) / 12;
+            const facturacionAnual = ticketMedio * ventasAnuales;
+
+            const mensaje = `Has indicado ${ventasAnuales} ventas anuales, con un ticket medio de ${ticketMedio.toFixed(2)}€. 
+            Esto son ${ventasMensuales.toFixed(2)} ventas por mes, una facturación mensual de ${facturacionMensual.toFixed(2)}€ y una anual de ${facturacionAnual.toFixed(2)}€`;
+
+            document.getElementById('resultado').innerText = mensaje;
+        }
+
+        function calcularComisiones() {
+            const ventasAnuales = parseFloat(document.getElementById('ventasAnuales').value);
+            const ticketMedio = parseFloat(document.getElementById('ticketMedio').value);
+            const pasarela = document.getElementById('pasarela').value;
+
+            if (isNaN(ventasAnuales) || isNaN(ticketMedio)) {
+                alert("Por favor, introduce valores numéricos válidos.");
+                return;
+            }
+
+            let comision = 0;
+            const facturacionAnual = ventasAnuales * ticketMedio;
+
+            switch (pasarela) {
+                case 'Stripe':
+                case 'SEPAByStripe':
+                    comision = 0.25 * ventasAnuales + facturacionAnual * 0.0195;
+                    break;
+                case 'LinkByStripe':
+                    comision = 0.15 * ventasAnuales + facturacionAnual * 0.0195;
+                    break;
+                case 'SquareTienda':
+                    comision = 0.0025 * ventasAnuales + facturacionAnual * 0.0140;
+                    break;
+                case 'SquarePaymentLink':
+                    comision = facturacionAnual * 0.0250;
+                    break;
+                case 'SumUp':
+                    comision = facturacionAnual * 0.0195;
+                    break;
+                case 'MoneiX':
+                    comision = 0.24 * ventasAnuales + facturacionAnual * 0.0119 + 0.10 * 365;
+                    break;
+                case 'GoCardless':
+                    comision = ventasAnuales * Math.min(Math.max(ticketMedio * 0.01, 0.20), 2);
+                    break;
+                case 'Transferencia':
+                    comision = 0;
+                    break;
+            }
+
+            document.getElementById('comisiones').innerText = `La comisión total para ${pasarela} es: ${comision.toFixed(2)}€`;
+        }
+    </script>
+</body>
+</html>

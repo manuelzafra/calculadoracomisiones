@@ -1,0 +1,2 @@
+#!/bin/sh
+git push origin main  # Cambia 'main' por tu rama principal si es diferente
